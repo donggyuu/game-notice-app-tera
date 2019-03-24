@@ -1,7 +1,5 @@
 package com.lee.donggyu.gamenoticeapptera;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.Log;
 
 import org.jsoup.Connection;
@@ -20,11 +18,7 @@ import java.util.List;
 
 public class NoticeService {
 
-
-
-
-
-    // TODO : number of images should not limited
+    // TODO set proper images
     // images showing showing on screen
     Integer[] imageId = {
             R.drawable.image_sample,
@@ -36,9 +30,7 @@ public class NoticeService {
             R.drawable.image_sample
     };
 
-
-
-
+    // connected to game site and return notice titiles
     public List<String> getNoticeTitles() {
 
         String noticeURL = "http://tera.nexon.com/news/noticeTera/list.aspx";
@@ -56,9 +48,7 @@ public class NoticeService {
             noticeElements = null;
         }
 
-        // protect fron null exeption - if null then return ""
         if (noticeElements == null) {
-            noticeTitles.add("");
 
             return noticeTitles;
         }
@@ -74,11 +64,12 @@ public class NoticeService {
         return noticeTitles;
     }
 
+    // connected to game site and return notice URLs
     public List<String> getNoticeURLs() {
 
         String noticeURL = "http://tera.nexon.com/news/noticeTera/list.aspx";
         Elements noticeElements;                   // original elements getting from html
-        List<String> noticeTitles = new ArrayList<>();  // original elements -> change to List<String>
+        List<String> noticeURLs = new ArrayList<>();  // original elements -> change to List<String>
 
         try {
             // get html document from site
@@ -96,25 +87,20 @@ public class NoticeService {
 
         // protect fron null exeption - if null then return ""
         if (noticeElements == null) {
-            noticeTitles.add("");
 
-            return noticeTitles;
+            return noticeURLs;
         }
 
         // show 15 notice titles
         for (int i = 0; i < 15; i++) {
             // protect fron null - exception
             if (noticeElements.size() > i) {
-                noticeTitles.add(noticeElements.get(i).attr("abs:href"));
+                noticeURLs.add(noticeElements.get(i).attr("abs:href"));
             }
         }
 
-        return noticeTitles;
+        return noticeURLs;
     }
-
-
-
-
 
 
     private Document getUrlConnection(String url) throws IOException {
@@ -154,8 +140,5 @@ public class NoticeService {
         }
         return elementStringList;
     }
-
-
-
 
 }

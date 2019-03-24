@@ -18,20 +18,17 @@ import java.util.List;
 
 public class NoticeRegularCrawling extends Service {
 
-
-    Context context = this;
-
     NoticeService noticeService = new NoticeService();
+    ServiceThread thread;
 
     // contains all notice titles
     List<String> noticeTitles = new ArrayList<>();
     // contains all notice urls
     List<String> noticeURLs = new ArrayList<>();
 
-
+    // for notification message
     NotificationManager Notifi_M;
-    ServiceThread thread;
-    Notification Notifi ;
+    Notification Notifi;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -47,53 +44,56 @@ public class NoticeRegularCrawling extends Service {
         return START_STICKY;
     }
 
-    //서비스가 종료될 때 할 작업
+    // Job when service ended
     public void onDestroy() {
         thread.stopForever();
-        thread = null;//쓰레기 값을 만들어서 빠르게 회수하라고 null을 넣어줌.
+        thread = null;  // make garbage for fast retrieved
     }
 
+
+    // Job - main service
     class myServiceHandler extends Handler {
         @Override
         public void handleMessage(android.os.Message msg) {
-            // Intent intent = new Intent(CrawlingService.this, MainActivity.class);
 
+            Log.i(this.getClass().getName(), "start getting notice titles regularly");
 
-            System.out.println("백그라운드에서 타이틀을 가져옵니다");
+            // TODO exception handling when web connetion is not good
+            // is already handled in NoticeService class?
             WebCrawling wc = new WebCrawling();
-            // TODO 인터넷 연결이 안되었을때 에러 뜨는데.. 그냥 원래 화면 유지하도록 exception처리
             wc.execute();
-
         }
-    };
+    }
 
 
-    public class ServiceThread extends Thread{
+    public class ServiceThread extends Thread {
         Handler handler;
         boolean isRun = true;
 
-        public ServiceThread(Handler handler){
+        public ServiceThread(Handler handler) {
             this.handler = handler;
         }
 
-        public void stopForever(){
+        public void stopForever() {
             synchronized (this) {
                 this.isRun = false;
             }
         }
 
-        public void run(){
-            //반복적으로 수행할 작업을 한다.
-            while(isRun){
-                handler.sendEmptyMessage(0);//쓰레드에 있는 핸들러에게 메세지를 보냄
-                try{
-                    Thread.sleep(10000); //10초씩 쉰다.
-                }catch (Exception e) {}
+        public void run() {
+            // run Job which should be run regularly
+            while (isRun) {
+                // send mesage to handler whihc is in thread
+                handler.sendEmptyMessage(0);
+                try {
+                    // TODO adjust tmies - now is crawling every 10 sec
+                    Thread.sleep(10000);
+                } catch (Exception e) {
+                }
             }
         }
+
     }
-
-
 
 
     private class WebCrawling extends AsyncTask<Void, Void, Void> {
@@ -103,7 +103,7 @@ public class NoticeRegularCrawling extends Service {
             super.onPreExecute();
         }
 
-        // get html data from URL using "Jsoup" library
+        // get notice titles and URLs from site using "Jsoup" library
         @Override
         protected Void doInBackground(Void... params) {
 
@@ -115,151 +115,101 @@ public class NoticeRegularCrawling extends Service {
 
         @Override
         protected void onPostExecute(Void result) {
-            Log.i(this.getClass().getName(), "starting onPostExeute");
-
-
-            // TODO
-            // 로직 : 맨 처음 타이트을 저장해둔다
-            // 가져올 떄마다 저장된 타이틀과 비교
-            // 일치하면 업뎃 아니니까 그냥 안띄움
-            // 안 일치하면 업뎃으로, 알려준다
-
-
-            // TODO
-            // if 앱이 실행된 상태 -> showNoticeTitleOnScreen
-            // else push alarm
-            // send result data - notice title to showNoticeTitleOnScreen method
-            // showNoticeTitleOnScreen();
-
-            // String list를 하나씩 돌면서 안에 "공지" 단어가 있으면 그 라인을 출력
-
-            // TODO : 무료 버전일 경우 여기에 광고 붙이기 유료일 경우는 안붙이기
-            // 공지가 여러개 있으면 그거 다 보여줄 것인가? ㅇㅇ
-
-
-//            String savedFirstTitle = getFirstNoticeTitle();
-//
-//            if (savedFirstTitle == "") {
-//                System.out.println("saved Title is not existed");
-//
-//                saveFirstNoticeTitle();
-//
-//            } else {
-//
-//            }
+            Log.i(this.getClass().getName(), "start onPostExecute for crawling");
 
             Intent intent = new Intent(NoticeRegularCrawling.this, MainActivity.class);
-            PendingIntent pendingIntent = PendingIntent.getActivity(NoticeRegularCrawling.this, 0, intent,PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent pendingIntent = PendingIntent.getActivity(NoticeRegularCrawling.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            // user run first this app so there is no saved title
+            if (getFirstNoticeTitle().equals("NoSavedTitle")) {
+
+                Log.i(this.getClass().getName(), "first run this application. So print welcome message");
+
+                // TODO write proper message in Korean
+                Notifi = new Notification.Builder(getApplicationContext())
+                        .setContentTitle("공지알림")
+                        .setContentText("아직은 공지가 없네여")
+                        .setSmallIcon(R.drawable.image_sample)
+                        .setTicker("처음 이용감사 여기에 공지가 뜰겁니다")
+                        .setContentIntent(pendingIntent)
+                        .build();
+
+                // TODO do proper setting for notification alarm
+                // Sound
+                Notifi.defaults = Notification.DEFAULT_SOUND;
+
+                // Notification alarm jus oneces
+                Notifi.flags = Notification.FLAG_ONLY_ALERT_ONCE;
+
+                // delete notification alarm automatically after user confirmed
+                Notifi.flags = Notification.FLAG_AUTO_CANCEL;
+
+                Notifi_M.notify(777, Notifi);
+
+                // toast message
+                Toast.makeText(NoticeRegularCrawling.this, "처음이용! ", Toast.LENGTH_LONG).show();
+
+                saveFirstNoticeTitle();
 
 
-                if (getFirstNoticeTitle().equals("NoSavedTitle")) {
+                // no official notice from site
+            } else if (noticeTitles.isEmpty()) {
 
-                    System.out.println("saved Title is not existed");
+                Log.i(this.getClass().getName(), "there is no official notice message from game site");
 
-                    Notifi = new Notification.Builder(getApplicationContext())
-                            .setContentTitle("공지알림")
-                            .setContentText("아직은 공지가 없네여")
-                            .setSmallIcon(R.drawable.image_sample)
-                            .setTicker("처음 이용감사 여기에 공지가 뜰겁니다")
-                            .setContentIntent(pendingIntent)
-                            .build();
+                // new official notice message is updated
+            } else if (!(noticeTitles.get(0).contains(getFirstNoticeTitle()))) {
 
-                    //소리추가
-                    Notifi.defaults = Notification.DEFAULT_SOUND;
+                Log.i(this.getClass().getName(), "there is new notice message from game site");
 
-                    //알림 소리를 한번만 내도록
-                    Notifi.flags = Notification.FLAG_ONLY_ALERT_ONCE;
+                // TODO write proper message in Korean
+                Notifi = new Notification.Builder(getApplicationContext())
+                        .setContentTitle("공지알림")
+                        .setContentText(noticeTitles.get(0))
+                        .setSmallIcon(R.drawable.image_sample)
+                        .setTicker("새로운 공지가 있습니다")
+                        .setContentIntent(pendingIntent)
+                        .build();
 
-                    //확인하면 자동으로 알림이 제거 되도록
-                    Notifi.flags = Notification.FLAG_AUTO_CANCEL;
+                // TODO do proper setting for notification alarm
+                Notifi.defaults = Notification.DEFAULT_SOUND;
 
+                Notifi.flags = Notification.FLAG_ONLY_ALERT_ONCE;
 
-                    Notifi_M.notify( 777 , Notifi);
+                Notifi.flags = Notification.FLAG_AUTO_CANCEL;
 
-                    //토스트 띄우기
-                    Toast.makeText(NoticeRegularCrawling.this, "처음이용! ", Toast.LENGTH_LONG).show();
+                Notifi_M.notify(777, Notifi);
 
+                Toast.makeText(NoticeRegularCrawling.this, "공지체크 ", Toast.LENGTH_LONG).show();
 
-                    saveFirstNoticeTitle();
-
-                    System.out.println("111 : " + getFirstNoticeTitle() );
-
-
-                    // 크롤링 해온게 빈 리스트일떄(아직 공지가 없을때)
-                } else if (noticeTitles.isEmpty()) {
-                    // 혹시모를 눌포 처리용 조건문임
-
-
-
-                    System.out.println("homapge no Title existed");
-
-                    System.out.println("222 : " + getFirstNoticeTitle() );
-
-                // 크롤링 해온 데이터랑 저장된 데이터를 비교했는데 같지 않다 == 업데이트되어서 다르다
-                // 만약 공지 자체가 없다면? 처음에 TryToFindButNoTitleExist 이 저장되었을거고, 앞에서 걸릴 것이다
-                //
-                } else if ( !(noticeTitles.get(0).contains(getFirstNoticeTitle()))) {
-
-                    System.out.println("GM이 공지 안에 들어있습니다");
-
-                    Notifi = new Notification.Builder(getApplicationContext())
-                            .setContentTitle("공지알림")
-                            .setContentText(noticeTitles.get(0))
-                            .setSmallIcon(R.drawable.image_sample)
-                            .setTicker("새로운 공지가 있습니다")
-                            .setContentIntent(pendingIntent)
-                            .build();
-
-                    //소리추가
-                    Notifi.defaults = Notification.DEFAULT_SOUND;
-
-                    //알림 소리를 한번만 내도록
-                    Notifi.flags = Notification.FLAG_ONLY_ALERT_ONCE;
-
-                    //확인하면 자동으로 알림이 제거 되도록
-                    Notifi.flags = Notification.FLAG_AUTO_CANCEL;
-
-
-                    Notifi_M.notify( 777 , Notifi);
-
-                    //토스트 띄우기
-                    Toast.makeText(NoticeRegularCrawling.this, "공지체크 ", Toast.LENGTH_LONG).show();
-
-
-                    saveFirstNoticeTitle();
-
-                    System.out.println("333 : " + getFirstNoticeTitle() );
-
-                }
-
-
-
+                saveFirstNoticeTitle();
+            }
 
         }
+
     }
 
-    private String getFirstNoticeTitle(){
+    // get saved first notice title
+    private String getFirstNoticeTitle() {
         SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
-
         return pref.getString("key", "NoSavedTitle");
     }
 
 
-    private void saveFirstNoticeTitle(){
+    // save first notice title getting from game site
+    private void saveFirstNoticeTitle() {
         SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
 
-
+        // there is no official notice in game site
         if (noticeTitles.isEmpty()) {
-            editor.putString("key", "TryToFindButNoTitleExist");
+            editor.putString("key", "Official notice is not found");
 
         } else {
             editor.putString("key", noticeTitles.get(0));
-
         }
 
         editor.commit();
     }
-
 
 }
