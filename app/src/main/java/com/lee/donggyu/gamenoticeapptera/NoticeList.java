@@ -35,7 +35,9 @@ public class NoticeList extends ArrayAdapter<String>{
         TextView txtTitle = (TextView) rowView.findViewById(R.id.txt);
 
         ImageView imageView = (ImageView) rowView.findViewById(R.id.img);
+
         txtTitle.setText(web.get(position));
+
 
         // TODO : title Icon Image -> think another way
         try {

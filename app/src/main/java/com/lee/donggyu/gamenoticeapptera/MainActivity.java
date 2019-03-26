@@ -11,11 +11,21 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.MobileAds;
+
 import java.util.ArrayList;
 import java.util.List;
 
 
+
+
 public class MainActivity extends AppCompatActivity {
+
+    // for ad
+    private InterstitialAd mInterstitialAd;
+    private int adCount = 0;
 
     NoticeService noticeService = new NoticeService();
 
@@ -29,13 +39,22 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // for ad
+        MobileAds.initialize(this,
+                "ca-app-pub-3940256099942544~3347511713");
+
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+
+
         // TODO set proper action bar setting
-        getSupportActionBar().setTitle("ACTIONBAR");
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFF339999));
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        // getSupportActionBar().setTitle("ACTIONBAR");
+        // getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFF339999));
+        // getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         //hideActionBar();
         //추가된 소스코드, Toolbar의 왼쪽에 버튼을 추가하고 버튼의 아이콘을 바꾼다.
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        // getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         // getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_la);
 
 
@@ -70,6 +89,14 @@ public class MainActivity extends AppCompatActivity {
         protected Void doInBackground(Void... params) {
 
             noticeTitles = noticeService.getNoticeTitles();
+            if (noticeTitles.size() == 0) {
+                noticeTitles.add("인터넷 연결 상태를 확인해주세요");
+                noticeTitles.add("인터넷 연결 상태를 확인해주세요");
+                noticeTitles.add("인터넷 연결 상태를 확인해주세요");
+                noticeTitles.add("인터넷 연결 상태를 확인해주세요");
+                noticeTitles.add("인터넷 연결 상태를 확인해주세요");
+            }
+
             noticeURLs = noticeService.getNoticeURLs();
 
             return null;
@@ -89,6 +116,13 @@ public class MainActivity extends AppCompatActivity {
      */
     private void showNoticeTitleOnScreen() {
 
+        if (mInterstitialAd.isLoaded()) {
+            mInterstitialAd.show();
+            adCount ++;
+        } else {
+            Log.d("TAG", "The interstitial wasn't loaded yet.");
+        }
+
         NoticeList adapter = new NoticeList(MainActivity.this, noticeTitles, noticeService.imageId);
         ListView list;
 
@@ -101,6 +135,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
+
 
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 intent.setData(Uri.parse(noticeURLs.get(position)));
