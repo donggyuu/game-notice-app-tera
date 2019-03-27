@@ -1,7 +1,6 @@
 package com.lee.donggyu.gamenoticeapptera;
 
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
 
@@ -26,6 +26,8 @@ public class MainActivity extends AppCompatActivity {
     // for ad
     private InterstitialAd mInterstitialAd;
     private int adCount = 0;
+
+    private AdView mAdView;
 
     NoticeService noticeService = new NoticeService();
 
@@ -43,9 +45,14 @@ public class MainActivity extends AppCompatActivity {
         MobileAds.initialize(this,
                 "ca-app-pub-3940256099942544~3347511713");
 
-        mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
-        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+//        mInterstitialAd = new InterstitialAd(this);
+//        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+//        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+
+
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
 
         // TODO set proper action bar setting
@@ -116,12 +123,11 @@ public class MainActivity extends AppCompatActivity {
      */
     private void showNoticeTitleOnScreen() {
 
-        if (mInterstitialAd.isLoaded()) {
-            mInterstitialAd.show();
-            adCount ++;
-        } else {
-            Log.d("TAG", "The interstitial wasn't loaded yet.");
-        }
+//        if (mInterstitialAd.isLoaded()) {
+//            mInterstitialAd.show();
+//        } else {
+//            Log.d("TAG", "The interstitial wasn't loaded yet.");
+//        }
 
         NoticeList adapter = new NoticeList(MainActivity.this, noticeTitles, noticeService.imageId);
         ListView list;
