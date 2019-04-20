@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
 
     // for ad
     private InterstitialAd mInterstitialAd;
-    private int adCount = 0;
+    // private int adCount = 0;
 
     private AdView mAdView;
 
@@ -45,9 +45,9 @@ public class MainActivity extends AppCompatActivity {
         MobileAds.initialize(this,
                 "ca-app-pub-3940256099942544~3347511713");
 
-//        mInterstitialAd = new InterstitialAd(this);
-//        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
-//        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
 
 
         mAdView = findViewById(R.id.adView);

@@ -86,8 +86,8 @@ public class NoticeRegularCrawling extends Service {
                 // send mesage to handler whihc is in thread
                 handler.sendEmptyMessage(0);
                 try {
-                    // TODO adjust tmies - now is crawling every 10 sec
-                    Thread.sleep(10000);
+                    // TODO adjust tmies - now is crawling every 10 min
+                    Thread.sleep(600000);
                 } catch (Exception e) {
                 }
             }
@@ -127,10 +127,10 @@ public class NoticeRegularCrawling extends Service {
 
                 // TODO write proper message in Korean
                 Notifi = new Notification.Builder(getApplicationContext())
-                        .setContentTitle("공지알림")
-                        .setContentText("아직은 공지가 없네여")
+                        .setContentTitle("테라 공지사항")
+                        .setContentText("새로운 공지가 뜨면 알려드립니다")
                         .setSmallIcon(R.drawable.image_sample)
-                        .setTicker("처음 이용감사 여기에 공지가 뜰겁니다")
+                        .setTicker("새로운 공지가 떴어요")
                         .setContentIntent(pendingIntent)
                         .build();
 
@@ -147,7 +147,7 @@ public class NoticeRegularCrawling extends Service {
                 Notifi_M.notify(777, Notifi);
 
                 // toast message
-                Toast.makeText(NoticeRegularCrawling.this, "처음이용! ", Toast.LENGTH_LONG).show();
+                Toast.makeText(NoticeRegularCrawling.this, "새로운 공지가 뜨면 알려드립니다", Toast.LENGTH_LONG).show();
 
                 saveFirstNoticeTitle();
 
@@ -164,10 +164,10 @@ public class NoticeRegularCrawling extends Service {
 
                 // TODO write proper message in Korean
                 Notifi = new Notification.Builder(getApplicationContext())
-                        .setContentTitle("공지알림")
+                        .setContentTitle("테라 공지사항")
                         .setContentText(noticeTitles.get(0))
                         .setSmallIcon(R.drawable.image_sample)
-                        .setTicker("새로운 공지가 있습니다")
+                        .setTicker("새로운 공지가 떴어요")
                         .setContentIntent(pendingIntent)
                         .build();
 
@@ -180,7 +180,7 @@ public class NoticeRegularCrawling extends Service {
 
                 Notifi_M.notify(777, Notifi);
 
-                Toast.makeText(NoticeRegularCrawling.this, "공지체크 ", Toast.LENGTH_LONG).show();
+                Toast.makeText(NoticeRegularCrawling.this, "새로운 공지가 떴어요", Toast.LENGTH_LONG).show();
 
                 saveFirstNoticeTitle();
             }

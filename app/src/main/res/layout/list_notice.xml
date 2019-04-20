@@ -15,7 +15,7 @@
             android:layout_height="match_parent"
             android:gravity="center_vertical"
 
-            android:textSize="16dp"
+            android:textSize="19dp"
             android:textColor="#ffffff"
             />
 
