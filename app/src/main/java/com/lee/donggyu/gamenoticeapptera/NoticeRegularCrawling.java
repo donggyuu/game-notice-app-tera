@@ -122,6 +122,7 @@ public class NoticeRegularCrawling extends Service {
 
             // user run first this app so there is no saved title
             if (getFirstNoticeTitle().equals("NoSavedTitle")) {
+            // if (true) {
 
                 Log.i(this.getClass().getName(), "first run this application. So print welcome message");
 

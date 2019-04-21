@@ -92,7 +92,7 @@ public class NoticeService {
         }
 
         // show 15 notice titles
-        for (int i = 0; i < 15; i++) {
+        for (int i = 0; i < 20; i++) {
             // protect fron null - exception
             if (noticeElements.size() > i) {
                 noticeURLs.add(noticeElements.get(i).attr("abs:href"));
