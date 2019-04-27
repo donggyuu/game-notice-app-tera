@@ -49,9 +49,10 @@ public class MainActivity extends AppCompatActivity {
 //        mInterstitialAd.setAdUnitId("ca-app-pub-9968881845594178/7333593487");
 //        mInterstitialAd.loadAd(new AdRequest.Builder().build());
 
-
         mAdView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
+
+        // cannot guarantee that Ads always be loaded
         mAdView.loadAd(adRequest);
 
 

@@ -26,7 +26,7 @@
         android:layout_centerHorizontal="true"
 
         ads:adSize="LARGE_BANNER"
-        ads:adUnitId="ca-app-pub-9968881845594178/5835303237"
+        ads:adUnitId="ca-app-pub-9968881845594178/9194790281"
         ads:layout_constraintBottom_toBottomOf="@+id/list"
         app:layout_constraintEnd_toEndOf="parent"></com.google.android.gms.ads.AdView>
 
