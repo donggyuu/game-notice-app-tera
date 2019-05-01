@@ -14,6 +14,15 @@ import android.widget.TextView;
 
 import java.util.List;
 
+
+/**
+ * set List format of notice
+ *
+ * parameter of constructor
+ * noticeTitle : title of notice getting from WebCrawling class
+ * noticeImage : image icon
+ *
+ */
 public class NoticeList extends ArrayAdapter<String>{
 
     private final Activity context;
@@ -38,8 +47,7 @@ public class NoticeList extends ArrayAdapter<String>{
 
         txtTitle.setText(web.get(position));
 
-
-        // TODO : title Icon Image -> think another way
+        // way of getting images is not good.
         try {
             imageView.setImageResource(imageId[position]);
         } catch (Exception e) {

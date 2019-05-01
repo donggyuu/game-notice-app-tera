@@ -18,7 +18,6 @@ import java.util.List;
 
 public class NoticeService {
 
-    // TODO set proper images
     // images showing showing on screen
     Integer[] imageId = {
             R.drawable.image_sample,
@@ -68,7 +67,7 @@ public class NoticeService {
     public List<String> getNoticeURLs() {
 
         String noticeURL = "http://tera.nexon.com/news/noticeTera/list.aspx";
-        Elements noticeElements;                   // original elements getting from html
+        Elements noticeElements;                      // original elements getting from html
         List<String> noticeURLs = new ArrayList<>();  // original elements -> change to List<String>
 
         try {
@@ -119,12 +118,10 @@ public class NoticeService {
 
         // get HTML data
         // if wifi(lte) disconnected, application stop at this point
-        // TODO : add alert message when wifi is disconnected
         Document doc = conn.get();
         Log.i(this.getClass().getName(), "connection done, got HTML document");
 
         return doc;
-
     }
 
     /**

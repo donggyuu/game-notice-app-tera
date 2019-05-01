@@ -66,6 +66,7 @@ public class NoticeRegularCrawling extends Service {
     }
 
 
+    // thread class for execute WebCrawling in thread
     public class ServiceThread extends Thread {
         Handler handler;
         boolean isRun = true;
@@ -126,7 +127,6 @@ public class NoticeRegularCrawling extends Service {
 
                 Log.i(this.getClass().getName(), "first run this application. So print welcome message");
 
-                // TODO write proper message in Korean
                 Notifi = new Notification.Builder(getApplicationContext())
                         .setContentTitle("테라 공지사항")
                         .setContentText("새로운 공지가 뜨면 알려드립니다")
@@ -135,7 +135,6 @@ public class NoticeRegularCrawling extends Service {
                         .setContentIntent(pendingIntent)
                         .build();
 
-                // TODO do proper setting for notification alarm
                 // Sound
                 Notifi.defaults = Notification.DEFAULT_SOUND;
 
@@ -152,7 +151,6 @@ public class NoticeRegularCrawling extends Service {
 
                 saveFirstNoticeTitle();
 
-
                 // no official notice from site
             } else if (noticeTitles.isEmpty()) {
 
@@ -163,7 +161,6 @@ public class NoticeRegularCrawling extends Service {
 
                 Log.i(this.getClass().getName(), "there is new notice message from game site");
 
-                // TODO write proper message in Korean
                 Notifi = new Notification.Builder(getApplicationContext())
                         .setContentTitle("테라 공지사항")
                         .setContentText(noticeTitles.get(0))
@@ -172,7 +169,6 @@ public class NoticeRegularCrawling extends Service {
                         .setContentIntent(pendingIntent)
                         .build();
 
-                // TODO do proper setting for notification alarm
                 Notifi.defaults = Notification.DEFAULT_SOUND;
 
                 Notifi.flags = Notification.FLAG_ONLY_ALERT_ONCE;
@@ -187,7 +183,6 @@ public class NoticeRegularCrawling extends Service {
             }
 
         }
-
     }
 
     // get saved first notice title
@@ -195,7 +190,6 @@ public class NoticeRegularCrawling extends Service {
         SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
         return pref.getString("key", "NoSavedTitle");
     }
-
 
     // save first notice title getting from game site
     private void saveFirstNoticeTitle() {
@@ -205,7 +199,6 @@ public class NoticeRegularCrawling extends Service {
         // there is no official notice in game site
         if (noticeTitles.isEmpty()) {
             editor.putString("key", "Official notice is not found");
-
         } else {
             editor.putString("key", noticeTitles.get(0));
         }

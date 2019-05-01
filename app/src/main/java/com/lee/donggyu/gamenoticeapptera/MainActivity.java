@@ -19,13 +19,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-
-
+/**
+ *  Set advertisement and execute crawling on background
+ *
+ */
 public class MainActivity extends AppCompatActivity {
-
-    // for ad
-    private InterstitialAd mInterstitialAd;
-    // private int adCount = 0;
 
     private AdView mAdView;
 
@@ -45,29 +43,21 @@ public class MainActivity extends AppCompatActivity {
         MobileAds.initialize(this,
                 "ca-app-pub-9968881845594178~2464054961");
 
-//        mInterstitialAd = new InterstitialAd(this);
-//        mInterstitialAd.setAdUnitId("ca-app-pub-9968881845594178/7333593487");
-//        mInterstitialAd.loadAd(new AdRequest.Builder().build());
-
         mAdView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
 
         // cannot guarantee that Ads always be loaded
         mAdView.loadAd(adRequest);
 
-
-        // TODO set proper action bar setting
+        // setting option for ActionBar
         // getSupportActionBar().setTitle("ACTIONBAR");
         // getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFF339999));
         // getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //hideActionBar();
-        //추가된 소스코드, Toolbar의 왼쪽에 버튼을 추가하고 버튼의 아이콘을 바꾼다.
+        // hideActionBar();
+        // 추가된 소스코드, Toolbar의 왼쪽에 버튼을 추가하고 버튼의 아이콘을 바꾼다.
         // getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         // getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_la);
 
-
-        // TODO exception handling when web connetion is not good
-        // is already handled in NoticeService class?
         // get notice title from game site
         WebCrawling wc = new WebCrawling();
         Log.i(this.getClass().getName(), "Now staring web crawling and get info from each site");
@@ -124,12 +114,6 @@ public class MainActivity extends AppCompatActivity {
      */
     private void showNoticeTitleOnScreen() {
 
-//        if (mInterstitialAd.isLoaded()) {
-//            mInterstitialAd.show();
-//        } else {
-//            Log.d("TAG", "The interstitial wasn't loaded yet.");
-//        }
-
         NoticeList adapter = new NoticeList(MainActivity.this, noticeTitles, noticeService.imageId);
         ListView list;
 
@@ -142,7 +126,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-
 
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 intent.setData(Uri.parse(noticeURLs.get(position)));
