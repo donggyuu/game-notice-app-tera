@@ -19,4 +19,7 @@
 -- ~~광고 요청이 항상 100% 성공하는 것은 아님-> 에드몹 특성상 어쩔 수 없음~~
 -- ~~앱을 실행했을 때만 crawling&push alaram -> 원인 파악 필요~~
 -- (cancel) 리스트의 흐르는 텍스트로 수정, 배경 단순한 걸로 바꿔 텍스트 가독성 올리기  
--- **react-native로 다시 구현할 예정**
+
+- 개발과정 블로그 정리 :  
+  https://donggyuu.github.io/articles/2019/08/03/parsing-by-asynctask-and-jsoup.html
+- **react-native로 다시 구현할 예정**
