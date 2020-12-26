@@ -1,11 +1,11 @@
-## Prolog
-Can check all details in below.  
-아래 블로그에서 세부내용을 확인할 수 있습니다.  
-https://donggyuu.github.io/development/notification-app-using-jsoup-in-android/
+## Documents
+Can check all details in [HERE](https://donggyuu.github.io/development/notification-app-using-jsoup-in-android/).  
+(위 링크의 블로그에서 세부내용을 확인할 수 있습니다)  
 
 
-## PushGameNotice - tera
-- push notices from game site(tera) periodically 
+## About Project
+- push [notices from game site-Tera-](http://tera.nexon.com/news/noticeTera/list.aspx) periodically   
+게임 사이트-Tera-의 공지를 주기적으로 확인해 푸시 알람을 뿌리는 앱)
 - run in Android
 
 
